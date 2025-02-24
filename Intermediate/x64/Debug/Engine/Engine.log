@@ -1,0 +1,30 @@
+﻿  C:\Workspace\AStarVisualize\Engine\Core.h
+  C:\Workspace\AStarVisualize\Engine\RTTI.h
+  C:\Workspace\AStarVisualize\Engine\Actor\Actor.h
+  C:\Workspace\AStarVisualize\Engine\Actor\DrawableActor.h
+  C:\Workspace\AStarVisualize\Engine\Container\List.h
+  C:\Workspace\AStarVisualize\Engine\Engine\Engine.h
+  C:\Workspace\AStarVisualize\Engine\Engine\Timer.h
+  C:\Workspace\AStarVisualize\Engine\Level\Level.h
+  C:\Workspace\AStarVisualize\Engine\Math\Vector2.h
+  C:\Workspace\AStarVisualize\Engine\PreCompiledHeader\PreCompiledHeader.h
+  C:\Workspace\AStarVisualize\Engine\Render\ScreenBuffer.h
+  11개 파일이 복사되었습니다.
+  PreCompiledHeader.cpp
+  Actor.cpp
+  DrawableActor.cpp
+  Engine.cpp
+  Timer.cpp
+  Level.cpp
+  Vector2.cpp
+  Main.cpp
+  ScreenBuffer.cpp
+  코드를 생성하고 있습니다...
+     C:\Workspace\AStarVisualize\Bin\x64\Debug\Engine\Engine.lib 라이브러리 및 C:\Workspace\AStarVisualize\Bin\x64\Debug\Engine\Engine.exp 개체를 생성하고 있습니다.
+  Engine.vcxproj -> C:\Workspace\AStarVisualize\Bin\x64\Debug\Engine\Engine.dll
+  'pwsh.exe'은(는) 내부 또는 외부 명령, 실행할 수 있는 프로그램, 또는
+  배치 파일이 아닙니다.
+  C:\Workspace\AStarVisualize\Bin\x64\Debug\Engine\Engine.dll
+  1개 파일이 복사되었습니다.
+  C:\Workspace\AStarVisualize\Bin\x64\Debug\Engine\Engine.lib
+  1개 파일이 복사되었습니다.
