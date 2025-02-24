@@ -12,6 +12,12 @@ AStar::AStar()
 AStar::~AStar()
 {
 	// 메모리 해제.
+	for (Node* node : deletedNodes)
+	{
+		SafeDelete(node);
+	}
+	deletedNodes.clear();
+
 	for (Node* node : openList)
 	{
 		SafeDelete(node);
@@ -121,7 +127,7 @@ std::vector<Node*> AStar::FindPath(Node* startNode, Node* goalNode, const std::v
 
 			// 방문을 위한 이웃 노드 생성.
 			// 방문할 노드의 gCost, hCost, fCost 계산.
-			Node* neighborNode = new Node(Vector2(newX, newY), currentNode);
+			Node* neighborNode = new Node({newX,newY}, currentNode);
 			neighborNode->gCost = currentNode->gCost + direction.cost;
 			neighborNode->hCost = CalculateHeuristic(neighborNode, goalNode);
 			neighborNode->fCost = neighborNode->gCost + neighborNode->hCost;
@@ -152,7 +158,7 @@ std::vector<Node*> AStar::FindPath(Node* startNode, Node* goalNode, const std::v
 		}
 	}
 
-	return {};
+	return std::vector<Node*>();
 }
 
 std::vector<Node*> AStar::ConstructPath(Node* goalNode)
@@ -167,8 +173,10 @@ std::vector<Node*> AStar::ConstructPath(Node* goalNode)
 	}
 
 	std::reverse(path.begin(), path.end());
+
 	return path;
 }
+
 
 float AStar::CalculateHeuristic(Node* currentNode, Node* goalNode)
 {
@@ -206,8 +214,8 @@ bool AStar::HasVisited(int x, int y, float gCost)
 			// 위치는 같지만, 비용이 작은 경우, 방문할 필요가 있으므로, 기존의 노드 삭제.
 			else
 			{
+				deletedNodes.emplace_back(*(openList.begin() + ix));
 				openList.erase(openList.begin() + ix);
-				SafeDelete(node);
 			}
 		}
 	}
@@ -226,8 +234,9 @@ bool AStar::HasVisited(int x, int y, float gCost)
 			// 위치는 같지만, 비용이 작은 경우, 방문할 필요가 있으므로, 기존의 노드 삭제.
 			else
 			{
+
+				deletedNodes.emplace_back(*(closedList.begin() + ix));
 				closedList.erase(closedList.begin() + ix);
-				SafeDelete(node);
 			}
 		}
 	}
