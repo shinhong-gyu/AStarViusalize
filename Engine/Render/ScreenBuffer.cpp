@@ -18,7 +18,17 @@ ScreenBuffer::ScreenBuffer(const COORD& size)
 	SetConsoleCursorInfo(buffer, &info);
 
 	// 마우스 입력도 활성화.
-	SetConsoleMode(buffer, ENABLE_MOUSE_INPUT | ENABLE_PROCESSED_INPUT);
+	DWORD mode;
+
+	if (GetConsoleMode(buffer, &mode))
+	{
+		mode &= ~ENABLE_QUICK_EDIT_MODE;
+		mode |= ENABLE_MOUSE_INPUT;
+		mode |= ENABLE_PROCESSED_INPUT;
+
+		SetConsoleMode(buffer, mode);
+	}
+
 }
 
 ScreenBuffer::ScreenBuffer(HANDLE console, const COORD& size)
@@ -79,9 +89,9 @@ void ScreenBuffer::Clear()
 
 void ScreenBuffer::Draw(CHAR_INFO* charInfo)
 {
- 	COORD bufferPosition = { 0, 0 };
- 	COORD bufferSize = { size.X, size.Y };
- 	SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
- 
- 	WriteConsoleOutputA(buffer, charInfo, bufferSize, bufferPosition, &writeRegion);
+	COORD bufferPosition = { 0, 0 };
+	COORD bufferSize = { size.X, size.Y };
+	SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
+
+	WriteConsoleOutputA(buffer, charInfo, bufferSize, bufferPosition, &writeRegion);
 }

@@ -29,7 +29,7 @@ BOOL WINAPI MessageProcessor(DWORD message)
 Engine* Engine::instance = nullptr;
 
 Engine::Engine()
-	: quit(false), mainLevel(nullptr), screenSize(40, 25)
+	: quit(false), mainLevel(nullptr), screenSize(40, 108)
 {
 	// 랜덤 시드 설정.
 	srand((unsigned int)time(nullptr));
@@ -200,6 +200,7 @@ void Engine::Draw(const Vector2& position, const char* image, Color color)
 void Engine::SetTargetFrameRate(float targetFrameRate)
 {
 	this->targetFrameRate = targetFrameRate;
+	//targetOneFrameTime = 1.0f / targetFrameRate / 60.0f;
 	targetOneFrameTime = 1.0f / targetFrameRate;
 }
 
@@ -237,18 +238,27 @@ Engine& Engine::Get()
 
 void Engine::ProcessInput()
 {
-	static HANDLE inputHandle = GetStdHandle(STD_INPUT_HANDLE);
+	HANDLE inputHandle = GetStdHandle(STD_INPUT_HANDLE);
+	static int flag = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT | ENABLE_PROCESSED_INPUT | ENABLE_EXTENDED_FLAGS;
+	SetConsoleMode(inputHandle, flag);
 
 	INPUT_RECORD record;
 	DWORD events;
 	if (PeekConsoleInput(inputHandle, &record, 1, &events) && events > 0)
 	{
+		if (record.EventType == WINDOW_BUFFER_SIZE_EVENT)
+		{
+			FlushConsoleInputBuffer(inputHandle);
+		}
+
 		if (ReadConsoleInput(inputHandle, &record, 1, &events))
 		{
 			switch (record.EventType)
 			{
 			case KEY_EVENT:
 			{
+				OutputDebugStringA("Key Event\n");
+
 				// 키 눌림 상태 업데이트.
 				if (record.Event.KeyEvent.bKeyDown)
 				{
@@ -264,10 +274,12 @@ void Engine::ProcessInput()
 
 			case MOUSE_EVENT:
 			{
+				OutputDebugStringA("Mouse Event\n");
+
 				// 마우스 커서 위치 업데이트.
 				mousePosition.x = record.Event.MouseEvent.dwMousePosition.X;
 				mousePosition.y = record.Event.MouseEvent.dwMousePosition.Y;
-
+				
 				// 마우스 왼쪽 버튼 클릭 상태 업데이트.
 				keyState[VK_LBUTTON].isKeyDown
 					= (record.Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED) != 0;
@@ -278,14 +290,16 @@ void Engine::ProcessInput()
 			}
 			break;
 
-			//		//case WINDOW_BUFFER_SIZE_EVENT:
+			//case WINDOW_BUFFER_SIZE_EVENT:
 			//{
 			//	char buffer[100];
-			//	sprintf_s(buffer, 100, "(%d,%d)", 
+			//	sprintf_s(buffer, 100, "(%d,%d)\n", 
 			//		record.Event.WindowBufferSizeEvent.dwSize.X, record.Event.WindowBufferSizeEvent.dwSize.Y
 			//	);
 
-			//	MessageBoxA(nullptr, buffer, "Test", MB_OK);
+			//	//OutputDebugStringA(buffer);
+
+			//	//MessageBoxA(nullptr, buffer, "Test", MB_OK);
 			//} break;
 			}
 		}
