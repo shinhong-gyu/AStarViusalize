@@ -3,6 +3,8 @@
 Wall::Wall(const Vector2& position)
 	: DrawableActor("#")
 {
+	this->color = Color::Blue;
+
 	this->position = position;
 }
 

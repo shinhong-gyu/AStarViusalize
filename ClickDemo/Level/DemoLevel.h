@@ -18,7 +18,6 @@ public:
 
 	Start* GetStartPoint();
 
-
 	// 플레이어가 목표지점에 도착하면 경로와 타겟 삭제
 	void PlayerArrived();
 

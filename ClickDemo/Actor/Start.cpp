@@ -19,15 +19,16 @@ void Start::Update(float deltaTime)
 	{
 		Vector2 target = Engine::Get().MousePosition();
 
+		auto* player = dynamic_cast<DemoLevel*>(Engine::Get().GetMainLevel())->GetPlayer();
 
+		if (player == nullptr) return;
 		// 화면 밖을 클릭했을때 화면 안으로 Clamp.
-		if (target.x >= 40) target.x = 39;
-		if (target.y >= 25) target.y = 24;
+		if (target.x >= player->grid[0].size()) target.x = player->grid[0].size() - 1;
+		if (target.y >= player->grid.size()) target.y = player->grid.size() - 1;
 		if (target.x < 0) target.x = 0;
 		if (target.y < 0) target.y = 0;
 
-
-		if (dynamic_cast<DemoLevel*>(Engine::Get().GetMainLevel())->GetPlayer()->grid[target.y][target.x] == 1) return;
+		if (player->grid[target.y][target.x] == 1) return;
 
 		position = target;
 	}

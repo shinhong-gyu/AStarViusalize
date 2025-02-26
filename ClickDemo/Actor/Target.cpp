@@ -3,7 +3,7 @@
 Target::Target(const Vector2& position, const char* image)
 	: DrawableActor(image)
 {
-	color = Color::Blue;
+	color = Color::Red;
 
 	this->position = position;
 }

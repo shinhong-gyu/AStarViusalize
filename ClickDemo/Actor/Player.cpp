@@ -1,4 +1,3 @@
-#include <iostream>
 
 #include "Player.h"
 #include "Engine/Engine.h"
@@ -6,9 +5,15 @@
 #include "Algorithm/AStar.h"
 #include "Start.h"
 #include "Algorithm/Node.h"
-#include <winbase.h>
 #include "Target.h"
 #include "AStarPath.h"
+
+#include <winbase.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
 
 DemoLevel* Player::demoLevel = nullptr;
 
@@ -17,11 +22,29 @@ Player::Player()
 {
 	color = Color::Green;
 
-	position = Vector2(1, 1);
-
 	pathFinder = new AStar();
 
 	timer->SetTime(0.1f);
+
+	ifstream inFile("map.txt");
+
+	if (inFile)
+	{
+		string line;
+		int row = 0;
+		while (getline(inFile, line) && row < 63)
+		{
+			std::vector<int> temp;
+			for (int col = 0; col < 192 && col < (int)line.size(); ++col)
+			{
+				temp.push_back(line[col] - '0');
+			}
+			grid.push_back(temp);
+			row++;
+		}
+	}
+
+	position = Vector2((int)grid[0].size() / 2 - 1, (int)grid.size() / 2 - 1);
 }
 
 Player::~Player()
@@ -83,8 +106,8 @@ void Player::Update(float deltaTime)
 
 
 		// 화면 밖을 클릭했을때 화면 안으로 Clamp.
-		if (target.x >= 40) target.x = 39;
-		if (target.y >= 25) target.y = 24;
+		if (target.x >= grid[0].size()) target.x = (int)grid[0].size() - 1;
+		if (target.y >= grid.size()) target.y = (int)grid.size() - 1;
 		if (target.x < 0) target.x = 0;
 		if (target.y < 0) target.y = 0;
 

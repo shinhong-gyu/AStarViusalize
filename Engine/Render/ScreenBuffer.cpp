@@ -1,5 +1,7 @@
 #include "PreCompiledHeader.h"
 #include "ScreenBuffer.h"
+#include "../Includes/Engine/Engine.h"
+#include "../Includes/Level/Level.h"
 
 ScreenBuffer::ScreenBuffer(const COORD& size)
 	: size(size)
@@ -89,7 +91,7 @@ void ScreenBuffer::Clear()
 
 void ScreenBuffer::Draw(CHAR_INFO* charInfo)
 {
-	COORD bufferPosition = { 0, 0 };
+	COORD bufferPosition = { 0,0 };
 	COORD bufferSize = { size.X, size.Y };
 	SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
 
