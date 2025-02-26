@@ -89,9 +89,9 @@ void ScreenBuffer::Clear()
 	FillConsoleOutputCharacter(buffer, ' ', (size.X + 1) * size.Y + 1, position, &writtenCount);
 }
 
-void ScreenBuffer::Draw(CHAR_INFO* charInfo)
+void ScreenBuffer::Draw(CHAR_INFO* charInfo, Vector2 offset)
 {
-	COORD bufferPosition = { 0,0 };
+	COORD bufferPosition = { (SHORT)offset.x,(SHORT)offset.y };
 	COORD bufferSize = { size.X, size.Y };
 	SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
 

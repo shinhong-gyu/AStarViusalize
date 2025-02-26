@@ -18,6 +18,8 @@ DemoLevel::DemoLevel()
 
 	AddActor(player);
 
+	SetPlayer(player);
+
 	for (int y = 0; y < player->grid.size(); y++)
 	{
 		for (int x = 0; x < player->grid[0].size(); x++)

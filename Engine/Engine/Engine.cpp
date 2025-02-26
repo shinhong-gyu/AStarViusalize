@@ -64,6 +64,8 @@ Engine::Engine()
 	int flag = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT | ENABLE_PROCESSED_INPUT | ENABLE_EXTENDED_FLAGS;
 	SetConsoleMode(inputHandle, flag);
 
+	curOffset = { 0,0 };
+
 	// std::cin/std::cout 연결 끊기.
 	std::ios::sync_with_stdio(false);
 }
@@ -201,7 +203,7 @@ void Engine::SetTargetFrameRate(float targetFrameRate)
 {
 	this->targetFrameRate = targetFrameRate;
 	//targetOneFrameTime = 1.0f / targetFrameRate / 60.0f;
-	targetOneFrameTime = 1.0f / targetFrameRate;
+	targetOneFrameTime = 1.0f / targetFrameRate/5.0f;
 }
 
 bool Engine::GetKey(int key)
@@ -279,7 +281,7 @@ void Engine::ProcessInput()
 				// 마우스 커서 위치 업데이트.
 				mousePosition.x = record.Event.MouseEvent.dwMousePosition.X;
 				mousePosition.y = record.Event.MouseEvent.dwMousePosition.Y;
-				
+
 				// 마우스 왼쪽 버튼 클릭 상태 업데이트.
 				keyState[VK_LBUTTON].isKeyDown
 					= (record.Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED) != 0;
@@ -344,10 +346,44 @@ void Engine::Draw()
 	if (mainLevel != nullptr)
 	{
 		mainLevel->Draw();
+
+		if (auto* player = mainLevel->GetPlayer())
+		{
+			// 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			// 			
+			// 	if (hConsole == INVALID_HANDLE_VALUE) {
+			// 	return;
+			// 	}
+			// 	CONSOLE_FONT_INFO fontInfo;
+			// 	if (GetCurrentConsoleFont(hConsole, FALSE, &fontInfo)) {
+			// 	COORD fontSize = GetConsoleFontSize(hConsole, fontInfo.nFont);
+			// 	}
+			// 	else {
+			// 	return;
+			// 	}
+
+			// 백버퍼에 데이터 쓰기.
+			int offsetX = player->Position().x - 22;
+			int offsetY = player->Position().y - (int)(22.0f / 16.0f * 9.0f);
+
+			if (offsetX < 0) offsetX = 0;
+			if (offsetY < 0) offsetY = 0;
+
+			curOffset = { offsetX,offsetY };
+
+			GetRenderer()->Draw(imageBuffer, curOffset);
+		}
+		else
+		{
+			GetRenderer()->Draw(imageBuffer);
+		}
+	}
+	else
+	{
+		// 백버퍼에 데이터 쓰기.
+		GetRenderer()->Draw(imageBuffer);
 	}
 
-	// 백버퍼에 데이터 쓰기.
-	GetRenderer()->Draw(imageBuffer);
 
 	// 프론트<->백 버퍼 교환.
 	Present();

@@ -28,10 +28,15 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
+	inline virtual void SetPlayer(Actor* player) { this->player = player; };
+	inline virtual Actor* GetPlayer() { return player; };
+
 protected:
 	// 게임 공간에 배치되는 물체(액터) 배열.
 	std::vector<Actor*> actors;
 
 	// 추가 요청된 액터.
 	std::vector<Actor*> addRequestedActors;
+
+	Actor* player = nullptr;
 };

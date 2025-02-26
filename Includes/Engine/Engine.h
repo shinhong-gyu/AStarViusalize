@@ -56,6 +56,9 @@ public:
 	// 엔진 종료 함수.
 	void QuitGame();
 
+	// 현재의 오프셋을 반환하는 함수
+	inline Vector2& CurrentOffset() {return curOffset;}
+
 	// 레벨을 반환하는 함수
 	inline Level* GetMainLevel() const { return mainLevel; }
 
@@ -104,6 +107,9 @@ protected:
 
 	// 마우스 좌표 위치.
 	Vector2 mousePosition;
+
+	// 현재 화면의 오프셋
+	Vector2 curOffset;
 
 	// 화면 버퍼(Buffer/Blob).
 	CHAR_INFO* imageBuffer = nullptr;
