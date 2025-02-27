@@ -7,9 +7,32 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <commdlg.h>
 #include <cstdio>
+#include <locale>
+#include <codecvt>
 
 using namespace std;
+
+std::wstring OpenFileDialog()
+{
+	OPENFILENAME ofn;       // 구조체
+	wchar_t szFile[MAX_PATH] = { 0 };  // 선택한 파일 경로를 저장할 버퍼
+
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = NULL; // 부모 윈도우 핸들 (콘솔 앱이라 NULL)
+	ofn.lpstrFilter = L"All Files\0*.*\0Text Files\0*.TXT\0";  // 파일 필터
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST; // 존재하는 파일만 선택 가능
+
+	if (GetOpenFileName(&ofn)) {
+		return std::wstring(szFile); // 선택한 파일 경로 반환
+	}
+	return L""; // 취소 시 빈 문자열 반환
+}
+
 
 int main()
 {
@@ -21,11 +44,14 @@ int main()
 
 	std::string filename;
 
-	srand(static_cast<unsigned int>(time(nullptr)));
+	// 	srand(static_cast<unsigned int>(time(nullptr)));
+	// 
+	// 	int num = rand() % 3 + 1;
 
-	int num = rand() % 3 + 1;
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	std::string str = converter.to_bytes(OpenFileDialog());
 
-	filename = "input" + to_string(num) + ".jpg";
+	filename = str;
 
 	cv::Mat image = cv::imread(filename, cv::IMREAD_GRAYSCALE);
 
@@ -36,9 +62,8 @@ int main()
 	cv::resize(image, newImage, size);
 
 	cv::Mat binaryImage;
-	
-	cv::threshold(newImage, binaryImage, 128, 255, cv::THRESH_BINARY);
 
+	cv::threshold(newImage, binaryImage, 128, 255, cv::THRESH_BINARY);
 
 	ofstream file("map.txt");
 	if (!file) {
@@ -77,20 +102,17 @@ int main()
 // 			file << "0";
 // 		}
 // 	}
-
-
-
 	// 	// 화면에 보이는 콘솔 창(윈도우) 핸들
- 	HWND consoleWindow = GetConsoleWindow();
- 
- 	int screenWidth = GetSystemMetrics(0);
- 	int screenHeight = screenWidth / 16 * 9;
- 
- 	MoveWindow(consoleWindow, (screenWidth - 450) / 2, (screenHeight - 450) / 2, 450, 450, true);
- 
- 	Engine engine;
- 	engine.LoadLevel(new DemoLevel());
- 	engine.Run();
+	HWND consoleWindow = GetConsoleWindow();
+
+	int screenWidth = GetSystemMetrics(0);
+	int screenHeight = screenWidth / 16 * 9;
+
+	MoveWindow(consoleWindow, (screenWidth - 450) / 2, (screenHeight - 450) / 2, 450, 450, true);
+
+	Engine engine;
+	engine.LoadLevel(new DemoLevel());
+	engine.Run();
 }
 
 //// #include <opencv2/core.hpp>
